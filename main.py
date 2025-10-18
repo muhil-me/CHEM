@@ -16,7 +16,7 @@ compound_name = st.text_input("Enter compound name: ")
 
 if st.button("Generate 3D Structure"):
     try:
-        query = "SELECT * FROM compounds WHERE name = ?"
+        query = "SELECT * FROM compounds WHERE LOWER(name) = LOWER(?)"
         cursor.execute(query, (compound_name,))
         result = cursor.fetchone()
         
