@@ -1,4 +1,4 @@
-import mysql.connector
+import sqlite3
 from rdkit import Chem
 from rdkit.Chem import AllChem
 import py3Dmol
@@ -8,19 +8,15 @@ st.title("Enter the compound name:")
 st.write(" This is a 3D Molecule Viewer")
 
 
-conn = mysql.connector.connect(
-    host="localhost",
-    user="muhil",
-    password="muhil@123",
-    database="mychemdb")
-
-cursor = conn.cursor(dictionary=True)
+conn = sqlite3.connect("data.db")  
+conn.row_factory = sqlite3.Row     
+cursor = conn.cursor()
 
 compound_name = st.text_input("Enter compound name: ")
 
 if st.button("Generate 3D Structure"):
     try:
-        query = "SELECT * FROM compounds WHERE name = %s"
+        query = "SELECT * FROM compounds WHERE name = ?"
         cursor.execute(query, (compound_name,))
         result = cursor.fetchone()
         
