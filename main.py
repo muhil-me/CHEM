@@ -5,7 +5,6 @@ import py3Dmol
 import streamlit as st
 
 st.title("Molecular visualiser")
-st.write(" This is a 3D Molecule Viewer")
 
 
 conn = sqlite3.connect("data.db")  
