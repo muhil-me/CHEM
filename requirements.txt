@@ -3,4 +3,4 @@ pubchempy
 rdkit
 py3Dmol
 pandas
-sqlite3
+
