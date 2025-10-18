@@ -1,0 +1,6 @@
+streamlit
+pubchempy
+rdkit
+py3Dmol
+pandas
+mysql-connector-python
