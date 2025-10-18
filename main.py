@@ -4,7 +4,7 @@ from rdkit.Chem import AllChem
 import py3Dmol
 import streamlit as st
 
-st.title("Enter the compound name:")
+st.title("Molecular visualiser")
 st.write(" This is a 3D Molecule Viewer")
 
 
