@@ -1,0 +1,59 @@
+import pandas as pd
+import pubchempy as pcp
+import mysql.connector
+import time
+import re
+
+df = pd.read_csv(r"C:\Users\WELCOME\Downloads\organic_compounds.csv")
+
+db = mysql.connector.connect(
+    host="localhost",
+    user="muhil",
+    password="muhil@123",
+    database="mychemdb"
+)
+cursor = db.cursor()
+
+for index, row in df.iterrows():
+    name = str(row['Name']).strip()
+
+    possible_names = re.split(r'[\(\),;/]', name)
+    possible_names = [n.strip() for n in possible_names if n.strip()]
+
+    compound = None
+    for n in possible_names:
+        try:
+            compound_list = pcp.get_compounds(n, 'name')
+            if compound_list:
+                compound = compound_list[0]
+                break
+        except Exception as e:
+            print(f"Error fetching {n}: {e}")
+            continue
+
+    if not compound:
+        print(f"Skipped {name}: not found in PubChem")
+        continue
+
+    try:
+        cid = compound.cid
+        mw = compound.molecular_weight
+        iupac = compound.iupac_name
+        smiles = compound.connectivity_smiles
+        formula = compound.molecular_formula
+
+        cursor.execute("""
+            INSERT IGNORE INTO compounds(name, formula, molecular_weight, iupac_name, smiles, cid)
+            VALUES (%s, %s, %s, %s, %s, %s)
+        """, (name, formula, mw, iupac, smiles, cid))
+        db.commit()
+
+        print(f"{name} inserted into database (CID {cid})")
+        time.sleep(0.2)
+
+    except Exception as e:
+        print(f"Skipped {name}: {e}")
+
+cursor.close()
+db.close()
+print("All done! Data fetched from PubChem and stored in MySQL.")
