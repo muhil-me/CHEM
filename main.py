@@ -29,7 +29,7 @@ if st.button("Generate 3D Structure"):
             st.write(f"**SMILES:** {result['smiles']}")
 
             if '.' in smiles or '+' in smiles or '-' in smiles:
-                st.write("⚠️ 3D structure not available for ionic compounds like salts.")
+                st.write("3D structure not available for ionic compounds like salts.")
             else:
                 mol = Chem.MolFromSmiles(smiles)
                 mol = Chem.AddHs(mol)
