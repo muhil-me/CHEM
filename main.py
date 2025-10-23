@@ -12,6 +12,7 @@ conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
 compound_name = st.text_input("Enter compound name: ")
+compound_name = compound_name.rstrip()
 
 if st.button("Generate 3D Structure"):
     try:
