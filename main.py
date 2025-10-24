@@ -27,6 +27,8 @@ def search_compounds(query):
     cursor.close()
     return [r['name'] for r in results]
 
+query = st.text_input("Search for a compound")
+
 selection = st.search_input(
     "Search compound name", 
     suggestions=search_compounds(query)
