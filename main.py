@@ -16,16 +16,6 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-def search_compounds(query):
-    cursor = conn.cursor(dictionary=True)
-    cursor.execute("""
-        SELECT name FROM compounds
-        WHERE name LIKE %s
-        LIMIT 10
-    """, (f"%{query}%",))
-    results = cursor.fetchall()
-    cursor.close()
-    return [r['name'] for r in results]
 
 conn = sqlite3.connect("data.db")  
 conn.row_factory = sqlite3.Row     
@@ -33,16 +23,6 @@ cursor = conn.cursor()
 
 compound_name = st.text_input("Enter compound name: ")
 compound_name = compound_name.rstrip()
-
-if compound_name:
-    results = search_compounds(compound_name)
-    if results:
-        st.write("**Suggestions:**")
-        for r in results:
-            if st.button(r):
-                st.session_state.selected = r
-    else:
-        st.write("No matches found.")
 
 
 if st.button("Generate 3D Structure"):
