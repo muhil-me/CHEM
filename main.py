@@ -29,10 +29,15 @@ def search_compounds(query):
 
 query = st.text_input("Search for a compound")
 
-selection = st.search_input(
-    "Search compound name", 
-    suggestions=search_compounds(query)
-)
+if query:
+    results = search_compounds(query)
+    if results:
+        st.write("**Suggestions:**")
+        for r in results:
+            if st.button(r):
+                st.session_state.selected = r
+    else:
+        st.write("No matches found.")
 
 
 conn = sqlite3.connect("data.db")  
