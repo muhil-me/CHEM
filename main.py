@@ -6,6 +6,16 @@ import streamlit as st
 
 st.title("Molecular visualiser")
 
+st.markdown("""
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    [data-testid="stToolbar"] {visibility: hidden;}
+    .stDeployButton {visibility: hidden;}
+    </style>
+    """, unsafe_allow_html=True)
+
 
 conn = sqlite3.connect("data.db")  
 conn.row_factory = sqlite3.Row     
