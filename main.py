@@ -61,11 +61,7 @@ if st.button("Generate 3D Structure"):
             
     except Exception as e:
         st.error(f"Error: {e}")
+
         
-    conn.close()
-            
-        conn.close()
-    
-    # Instructions when no compound is searched yet
-    else:
-        st.info("👆 Enter a compound name above and click 'Generate 3D Structure' to visualize the molecule!")
+conn.close()
+
