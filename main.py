@@ -27,10 +27,15 @@ def search_compounds(query):
     cursor.close()
     return [r['name'] for r in results]
 
-query = st.text_input("Search for a compound")
+conn = sqlite3.connect("data.db")  
+conn.row_factory = sqlite3.Row     
+cursor = conn.cursor()
 
-if query:
-    results = search_compounds(query)
+compound_name = st.text_input("Enter compound name: ")
+compound_name = compound_name.rstrip()
+
+if compound_name:
+    results = search_compounds(compound_name)
     if results:
         st.write("**Suggestions:**")
         for r in results:
@@ -39,13 +44,6 @@ if query:
     else:
         st.write("No matches found.")
 
-
-conn = sqlite3.connect("data.db")  
-conn.row_factory = sqlite3.Row     
-cursor = conn.cursor()
-
-compound_name = st.text_input("Enter compound name: ")
-compound_name = compound_name.rstrip()
 
 if st.button("Generate 3D Structure"):
     try:
