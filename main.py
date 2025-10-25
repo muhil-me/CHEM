@@ -61,7 +61,6 @@ if st.button("Generate 3D Structure"):
                 result = None
             
             compound_name = pcp.get_compounds(compound_name, 'name')
-            st.success('Done!')
 
             if compound_name:
                 compound = compound_name[0]
