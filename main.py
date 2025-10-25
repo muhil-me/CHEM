@@ -5,7 +5,6 @@ import py3Dmol
 import streamlit as st
 import streamlit.components.v1 as components
 
-
 st.set_page_config(page_title="Molecular Visualiser", layout="wide")
 
 st.markdown(
@@ -26,7 +25,6 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
 def render_card(title: str, inner_html: str):
     """Render a white rounded card with a title and arbitrary inner HTML/markdown."""
     card = f"""
@@ -36,7 +34,6 @@ def render_card(title: str, inner_html: str):
     </div>
     """
     st.markdown(card, unsafe_allow_html=True)
-
 
 # --- session state defaults -------------------------------------------------
 if 'recent_searches' not in st.session_state:
@@ -49,59 +46,34 @@ conn = sqlite3.connect("data.db")
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
 
-
 st.title("Molecular visualiser")
-st.write("Explore molecules from your local database. Enter a compound name and generate a 3D view.")
+st.write("Explore molecules from your local database. Select a compound and generate a 3D view.")
 
 left, right = st.columns([1, 2])
 
 with left:
     with st.container():
         st.markdown('<div class="input-box">', unsafe_allow_html=True)
-        # input box: user can type; suggestions will appear below
-        compound_name = st.text_input("Compound name", value=st.session_state.get('compound_name', ''))
-        compound_name = compound_name.rstrip()
-        generate = st.button("Generate 3D Structure")
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        st.markdown("<div class='small'>Tip: try names like aspirin, ethanol, or search your DB.</div>", unsafe_allow_html=True)
 
         # helper: fetch matching suggestions from DB
-        def get_suggestions(prefix, limit=8):
-            if not prefix:
-                return []
+        def get_suggestions(limit=8):
             try:
-                q = "SELECT name FROM compounds WHERE LOWER(name) LIKE LOWER(?) ORDER BY name LIMIT ?"
-                cursor.execute(q, (f"%{prefix}%", limit))
+                q = "SELECT name FROM compounds ORDER BY name LIMIT ?"
+                cursor.execute(q, (limit,))
                 rows = cursor.fetchall()
                 return [r['name'] for r in rows]
             except Exception:
                 return []
 
-        # Show suggestions as a searchable dropdown (selectbox). This gives keyboard
-        # navigation and filtering inside the dropdown and behaves like a typeahead.
-        suggestions = get_suggestions(compound_name)
-        use_selectbox = st.checkbox('Use dropdown suggestions (keyboard-friendly)', value=True)
-        if suggestions and use_selectbox:
-            # add an explicit placeholder option
-            opts = ["-- select suggestion --"] + suggestions[:5]
-            choice = st.selectbox("Suggestions (click or type to filter)", opts, index=0, key='suggest_select')
-            if choice and choice != "-- select suggestion --":
-                # user selected a suggestion — populate input and trigger generation
-                st.session_state['compound_name'] = choice
-                st.session_state['generate'] = True
-                st.experimental_rerun()
+        # Fetch suggestions and show in the selectbox
+        suggestions = get_suggestions()
+        compound_name = st.selectbox("Select a compound", options=["-- select compound --"] + suggestions, key='select_compound')
+        
+        # Generate button below selectbox
+        generate = st.button("Generate 3D Structure")
+        st.markdown('</div>', unsafe_allow_html=True)
 
-        # Fallback: if user prefers simple clickable chips, show them
-        if suggestions and not use_selectbox:
-            st.markdown("<div style='margin-top:8px'><strong>Suggestions:</strong></div>", unsafe_allow_html=True)
-            cols = st.columns(min(4, len(suggestions)))
-            for i, s in enumerate(suggestions[:8]):
-                with cols[i % len(cols)]:
-                    if st.button(s, key=f'sugg_{s}'):
-                        st.session_state['compound_name'] = s
-                        st.session_state['generate'] = True
-                        st.experimental_rerun()
+        st.markdown("<div class='small'>Tip: Try searching for compounds like aspirin or ethanol from the database.</div>", unsafe_allow_html=True)
 
         # Recent searches (clickable)
         recent = st.session_state.get('recent_searches', [])
@@ -118,57 +90,58 @@ with left:
 with right:
     view_placeholder = st.empty()
 
-
 if generate:
-    try:
-        query = "SELECT * FROM compounds WHERE LOWER(name) = LOWER(?)"
-        cursor.execute(query, (compound_name,))
-        result = cursor.fetchone()
+    if compound_name != "-- select compound --":
+        try:
+            query = "SELECT * FROM compounds WHERE LOWER(name) = LOWER(?)"
+            cursor.execute(query, (compound_name,))
+            result = cursor.fetchone()
 
-        if result:
-            smiles = result['smiles']
-            info_html = (
-                f"<p><strong>Molecular Formula:</strong> {result['formula']}</p>"
-                f"<p><strong>Molecular Weight:</strong> {result['molecular_weight']}</p>"
-                f"<p><strong>IUPAC Name:</strong> {result['iupac_name']}</p>"
-                f"<p><strong>SMILES:</strong> {result['smiles']}</p>"
-            )
-            # show info in a rounded card
-            with left:
-                st.markdown(render_card("Compound information", info_html), unsafe_allow_html=True)
-
-            if '.' in smiles or '+' in smiles or '-' in smiles:
-                with left:
-                    st.warning("3D structure not available for ionic compounds like salts.")
-            else:
-                mol = Chem.MolFromSmiles(smiles)
-                mol = Chem.AddHs(mol)
-                AllChem.EmbedMolecule(mol)
-                AllChem.MMFFOptimizeMolecule(mol)
-
-                view = py3Dmol.view(width=600, height=480)
-                view.addModel(Chem.MolToMolBlock(mol), 'mol')
-                view.setStyle({'stick': {}})
-                view.zoomTo()
-
-                viewer_html = view._make_html()
-
-                # Some environments block the default jsDelivr CDN. Prefer the official 3dmol host
-                # and render the returned HTML using Streamlit components so script tags execute.
-                viewer_html = viewer_html.replace(
-                    'https://cdn.jsdelivr.net/npm/3dmol@2.5.3/build/3Dmol-min.js',
-                    'https://3dmol.csb.pitt.edu/build/3Dmol-min.js',
+            if result:
+                smiles = result['smiles']
+                info_html = (
+                    f"<p><strong>Molecular Formula:</strong> {result['formula']}</p>"
+                    f"<p><strong>Molecular Weight:</strong> {result['molecular_weight']}</p>"
+                    f"<p><strong>IUPAC Name:</strong> {result['iupac_name']}</p>"
+                    f"<p><strong>SMILES:</strong> {result['smiles']}</p>"
                 )
+                # show info in a rounded card
+                with left:
+                    st.markdown(render_card("Compound information", info_html), unsafe_allow_html=True)
 
-                # place viewer inside a rounded white card and use components.html so JS runs
-                html_wrapper = f"<div class='card mol-frame'>{viewer_html}</div>"
-                components.html(html_wrapper, height=520)
+                if '.' in smiles or '+' in smiles or '-' in smiles:
+                    with left:
+                        st.warning("3D structure not available for ionic compounds like salts.")
+                else:
+                    mol = Chem.MolFromSmiles(smiles)
+                    mol = Chem.AddHs(mol)
+                    AllChem.EmbedMolecule(mol)
+                    AllChem.MMFFOptimizeMolecule(mol)
 
-        else:
-            st.error("Compound not found in your local database")
+                    view = py3Dmol.view(width=600, height=480)
+                    view.addModel(Chem.MolToMolBlock(mol), 'mol')
+                    view.setStyle({'stick': {}})
+                    view.zoomTo()
 
-    except Exception as e:
-        st.error(f"Error: {e}")
+                    viewer_html = view._make_html()
 
+                    # Some environments block the default jsDelivr CDN. Prefer the official 3dmol host
+                    # and render the returned HTML using Streamlit components so script tags execute.
+                    viewer_html = viewer_html.replace(
+                        'https://cdn.jsdelivr.net/npm/3dmol@2.5.3/build/3Dmol-min.js',
+                        'https://3dmol.csb.pitt.edu/build/3Dmol-min.js',
+                    )
+
+                    # place viewer inside a rounded white card and use components.html so JS runs
+                    html_wrapper = f"<div class='card mol-frame'>{viewer_html}</div>"
+                    components.html(html_wrapper, height=520)
+
+            else:
+                st.error("Compound not found in your local database")
+
+        except Exception as e:
+            st.error(f"Error: {e}")
+    else:
+        st.warning("Please select a compound from the list.")
+        
 conn.close()
-
