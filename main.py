@@ -54,30 +54,9 @@ with left:
     with st.container():
         st.markdown('<div class="input-box">', unsafe_allow_html=True)
 
-        # helper: fetch matching names from DB using prefix match
-        def get_matches(prefix: str, limit: int = 5):
-            if not prefix:
-                return []
-            try:
-                q = "SELECT name FROM compounds WHERE LOWER(name) LIKE LOWER(?) ORDER BY name LIMIT ?"
-                cursor.execute(q, (f"%{prefix}%", limit))
-                rows = cursor.fetchall()
-                return [r['name'] for r in rows]
-            except Exception:
-                return []
-
-        # Search box (text input). As the user types we populate a small "Search results" dropdown.
+        # Search box (single input). Type the compound name and press Generate.
         compound_input = st.text_input("Search compound", value=st.session_state.get('compound_name', ''), key='compound_input')
         compound_input = compound_input.strip()
-
-        # dynamic results dropdown (acts like the Google-like suggestions dropdown)
-        suggestions = get_matches(compound_input, limit=5)
-        selected_from_results = None
-        if suggestions:
-            opts = ["-- choose from results --"] + suggestions
-            sel = st.selectbox("Search results", opts, index=0, key='search_results')
-            if sel and sel != "-- choose from results --":
-                selected_from_results = sel
 
         # Generate button below
         generate = st.button("Generate 3D Structure")
@@ -158,11 +137,6 @@ def generate_for_name(name: str):
     html_wrapper = f"<div class='card mol-frame'>{viewer_html}</div>"
     components.html(html_wrapper, height=520)
 
-
-# If the user picked a result from the dynamic dropdown, generate immediately
-if 'selected_from_results' in locals() and selected_from_results:
-    st.session_state['compound_name'] = selected_from_results
-    generate_for_name(selected_from_results)
 
 # If user clicked Generate, use the input value
 if generate:
