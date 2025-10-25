@@ -9,7 +9,7 @@ st.title("Molecular visualiser")
 st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
-    footer {visibility: shown;}
+    footer {visibility: hidden;}
     header {visibility: hidden;}
     [data-testid="stToolbar"] {visibility: hidden;}
     .stDeployButton {visibility: hidden;}
