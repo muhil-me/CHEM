@@ -88,7 +88,7 @@ if st.button("Generate 3D Structure"):
                     viewer_html = view._make_html()
                     st.components.v1.html(viewer_html, height=450)
 
-                st.write("Data sourced from PubChem. there may be discrepancies with chemical formula.")
+                    st.write("Data sourced from PubChem. there may be discrepancies with chemical formula.")
 
                 
             else:
