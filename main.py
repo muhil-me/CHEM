@@ -96,9 +96,16 @@ if generate:
 
                 viewer_html = view._make_html()
 
-                # place viewer inside a rounded white card
+                # Some environments block the default jsDelivr CDN. Prefer the official 3dmol host
+                # and render the returned HTML using Streamlit components so script tags execute.
+                viewer_html = viewer_html.replace(
+                    'https://cdn.jsdelivr.net/npm/3dmol@2.5.3/build/3Dmol-min.js',
+                    'https://3dmol.csb.pitt.edu/build/3Dmol-min.js',
+                )
+
+                # place viewer inside a rounded white card and use components.html so JS runs
                 html_wrapper = f"<div class='card mol-frame'>{viewer_html}</div>"
-                view_placeholder.markdown(html_wrapper, unsafe_allow_html=True)
+                components.html(html_wrapper, height=520)
 
         else:
             st.error("Compound not found in your local database")
