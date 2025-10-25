@@ -38,6 +38,13 @@ def render_card(title: str, inner_html: str):
     st.markdown(card, unsafe_allow_html=True)
 
 
+# --- session state defaults -------------------------------------------------
+if 'recent_searches' not in st.session_state:
+    st.session_state['recent_searches'] = []
+if 'generate' not in st.session_state:
+    st.session_state['generate'] = False
+
+
 conn = sqlite3.connect("data.db")
 conn.row_factory = sqlite3.Row
 cursor = conn.cursor()
@@ -51,12 +58,50 @@ left, right = st.columns([1, 2])
 with left:
     with st.container():
         st.markdown('<div class="input-box">', unsafe_allow_html=True)
-        compound_name = st.text_input("Compound name", value="")
+        # input box: user can type; suggestions will appear below
+        compound_name = st.text_input("Compound name", value=st.session_state.get('compound_name', ''))
         compound_name = compound_name.rstrip()
         generate = st.button("Generate 3D Structure")
         st.markdown('</div>', unsafe_allow_html=True)
 
         st.markdown("<div class='small'>Tip: try names like aspirin, ethanol, or search your DB.</div>", unsafe_allow_html=True)
+
+        # helper: fetch matching suggestions from DB
+        def get_suggestions(prefix, limit=8):
+            if not prefix:
+                return []
+            try:
+                q = "SELECT name FROM compounds WHERE LOWER(name) LIKE LOWER(?) ORDER BY name LIMIT ?"
+                cursor.execute(q, (f"%{prefix}%", limit))
+                rows = cursor.fetchall()
+                return [r['name'] for r in rows]
+            except Exception:
+                return []
+
+        # Show suggestions as small clickable buttons
+        suggestions = get_suggestions(compound_name)
+        if suggestions:
+            st.markdown("<div style='margin-top:8px'><strong>Suggestions:</strong></div>", unsafe_allow_html=True)
+            cols = st.columns(min(4, len(suggestions)))
+            for i, s in enumerate(suggestions):
+                with cols[i % len(cols)]:
+                    if st.button(s, key=f'sugg_{s}'):
+                        # set the input to this suggestion and trigger generate
+                        st.session_state['compound_name'] = s
+                        st.session_state['generate'] = True
+                        st.experimental_rerun()
+
+        # Recent searches (clickable)
+        recent = st.session_state.get('recent_searches', [])
+        if recent:
+            st.markdown("<div style='margin-top:10px'><strong>Recent searches:</strong></div>", unsafe_allow_html=True)
+            rcols = st.columns(min(5, len(recent)))
+            for i, r in enumerate(recent):
+                with rcols[i % len(rcols)]:
+                    if st.button(r, key=f'recent_{r}'):
+                        st.session_state['compound_name'] = r
+                        st.session_state['generate'] = True
+                        st.experimental_rerun()
 
 with right:
     view_placeholder = st.empty()
