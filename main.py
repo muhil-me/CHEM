@@ -78,15 +78,27 @@ with left:
             except Exception:
                 return []
 
-        # Show suggestions as small clickable buttons
+        # Show suggestions as a searchable dropdown (selectbox). This gives keyboard
+        # navigation and filtering inside the dropdown and behaves like a typeahead.
         suggestions = get_suggestions(compound_name)
-        if suggestions:
+        use_selectbox = st.checkbox('Use dropdown suggestions (keyboard-friendly)', value=True)
+        if suggestions and use_selectbox:
+            # add an explicit placeholder option
+            opts = ["-- select suggestion --"] + suggestions[:5]
+            choice = st.selectbox("Suggestions (click or type to filter)", opts, index=0, key='suggest_select')
+            if choice and choice != "-- select suggestion --":
+                # user selected a suggestion — populate input and trigger generation
+                st.session_state['compound_name'] = choice
+                st.session_state['generate'] = True
+                st.experimental_rerun()
+
+        # Fallback: if user prefers simple clickable chips, show them
+        if suggestions and not use_selectbox:
             st.markdown("<div style='margin-top:8px'><strong>Suggestions:</strong></div>", unsafe_allow_html=True)
             cols = st.columns(min(4, len(suggestions)))
-            for i, s in enumerate(suggestions):
+            for i, s in enumerate(suggestions[:8]):
                 with cols[i % len(cols)]:
                     if st.button(s, key=f'sugg_{s}'):
-                        # set the input to this suggestion and trigger generate
                         st.session_state['compound_name'] = s
                         st.session_state['generate'] = True
                         st.experimental_rerun()
