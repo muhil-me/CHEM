@@ -3,6 +3,9 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 import py3Dmol
 import streamlit as st
+import pubchempy as pcp
+import time
+
 
 st.title("Molecular visualiser")
 
@@ -53,8 +56,44 @@ if st.button("Generate 3D Structure"):
                 st.components.v1.html(viewer_html, height=450)
 
         else:
-            st.error("Compound not found in your local database")
-            smiles = None
+            with st.spinner('Fetching data from PubChem...'):
+                time.sleep(2)           
+                result = None
+            
+            compound_name = pcp.get_compounds(compound_name, 'name')
+            st.success('Done!')
+
+            if compound_name:
+                compound = compound_name[0]
+                smiles = compound.isomeric_smiles
+                st.subheader("Compound Information")
+                st.write(f"**Molecular Formula:** {compound.molecular_formula}")
+                st.write(f"**Molecular Weight:** {compound.molecular_weight}")
+                st.write(f"**IUPAC Name:** {compound.iupac_name}")
+                st.write(f"**SMILES:** {smiles}")
+
+                if '.' in smiles or '+' in smiles or '-' in smiles:
+                    st.write("3D structure not available for ionic compounds like salts.")
+                else:
+                    mol = Chem.MolFromSmiles(smiles)
+                    mol = Chem.AddHs(mol)
+                    AllChem.EmbedMolecule(mol)
+                    AllChem.MMFFOptimizeMolecule(mol)
+
+                    view = py3Dmol.view(width=400, height=300)
+                    view.addModel(Chem.MolToMolBlock(mol), 'mol')
+                    view.setStyle({'stick': {}})
+                    view.zoomTo()
+
+                    viewer_html = view._make_html()
+                    st.components.v1.html(viewer_html, height=450)
+
+                st.write("Data sourced from PubChem. there may be discrepancies with chemical formula.")
+
+                
+            else:
+                st.error("Compound not found in the database or PubChem.")
+            
 
     except Exception as e:
         st.error(f"Error: {e}")
