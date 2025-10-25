@@ -107,57 +107,56 @@ def generate_for_name(name: str):
         st.warning("Please enter a compound name.")
         return
 
-    try:
-        query = "SELECT * FROM compounds WHERE LOWER(name) = LOWER(?)"
-        cursor.execute(query, (name,))
-        result = cursor.fetchone()
+    query = "SELECT * FROM compounds WHERE LOWER(name) = LOWER(?)"
+    cursor.execute(query, (name,))
+    result = cursor.fetchone()
 
-        if not result:
-            st.error("Compound not found in your local database")
-            return
+    if not result:
+        st.error("Compound not found in your local database")
+        return
 
-        # update recent searches (keep unique, most recent first, limit 8)
-        recent = st.session_state.get('recent_searches', [])
-        if name in recent:
-            recent.remove(name)
-        recent.insert(0, name)
-        st.session_state['recent_searches'] = recent[:8]
+    # update recent searches (keep unique, most recent first, limit 8)
+    recent = st.session_state.get('recent_searches', [])
+    if name in recent:
+        recent.remove(name)
+    recent.insert(0, name)
+    st.session_state['recent_searches'] = recent[:8]
 
-        smiles = result['smiles']
-        info_html = (
-            f"<p><strong>Molecular Formula:</strong> {result['formula']}</p>"
-            f"<p><strong>Molecular Weight:</strong> {result['molecular_weight']}</p>"
-            f"<p><strong>IUPAC Name:</strong> {result['iupac_name']}</p>"
-            f"<p><strong>SMILES:</strong> {result['smiles']}</p>"
-        )
+    smiles = result['smiles']
+    info_html = (
+        f"<p><strong>Molecular Formula:</strong> {result['formula']}</p>"
+        f"<p><strong>Molecular Weight:</strong> {result['molecular_weight']}</p>"
+        f"<p><strong>IUPAC Name:</strong> {result['iupac_name']}</p>"
+        f"<p><strong>SMILES:</strong> {result['smiles']}</p>"
+    )
 
-        # show info in a rounded card
+    # show info in a rounded card
+    with left:
+        st.markdown(render_card("Compound information", info_html), unsafe_allow_html=True)
+
+    if '.' in smiles or '+' in smiles or '-' in smiles:
         with left:
-            st.markdown(render_card("Compound information", info_html), unsafe_allow_html=True)
+            st.warning("3D structure not available for ionic compounds like salts.")
+        return
 
-        if '.' in smiles or '+' in smiles or '-' in smiles:
-            with left:
-                st.warning("3D structure not available for ionic compounds like salts.")
-            return
+    mol = Chem.MolFromSmiles(smiles)
+    mol = Chem.AddHs(mol)
+    AllChem.EmbedMolecule(mol)
+    AllChem.MMFFOptimizeMolecule(mol)
 
-        mol = Chem.MolFromSmiles(smiles)
-        mol = Chem.AddHs(mol)
-        AllChem.EmbedMolecule(mol)
-        AllChem.MMFFOptimizeMolecule(mol)
+    view = py3Dmol.view(width=600, height=480)
+    view.addModel(Chem.MolToMolBlock(mol), 'mol')
+    view.setStyle({'stick': {}})
+    view.zoomTo()
 
-        view = py3Dmol.view(width=600, height=480)
-        view.addModel(Chem.MolToMolBlock(mol), 'mol')
-        view.setStyle({'stick': {}})
-        view.zoomTo()
+    viewer_html = view._make_html()
+    viewer_html = viewer_html.replace(
+        'https://cdn.jsdelivr.net/npm/3dmol@2.5.3/build/3Dmol-min.js',
+        'https://3dmol.csb.pitt.edu/build/3Dmol-min.js',
+    )
 
-        viewer_html = view._make_html()
-        viewer_html = viewer_html.replace(
-            'https://cdn.jsdelivr.net/npm/3dmol@2.5.3/build/3Dmol-min.js',
-            'https://3dmol.csb.pitt.edu/build/3Dmol-min.js',
-        )
-
-        html_wrapper = f"<div class='card mol-frame'>{viewer_html}</div>"
-        components.html(html_wrapper, height=520)
+    html_wrapper = f"<div class='card mol-frame'>{viewer_html}</div>"
+    components.html(html_wrapper, height=520)
 
 
 # If the user picked a result from the dynamic dropdown, generate immediately
