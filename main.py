@@ -44,30 +44,18 @@ def insert_compound(name, formula, weight, iupac, smiles):
         st.error(f"Error inserting compound: {e}")
         return False
 
-def get_compound_suggestions(search_term):
-    """Get compound suggestions from database matching the search term"""
+def get_all_compounds():
+    """Get all compound names from database"""
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        if not search_term:
-            # Return first 10 compounds when no search term
-            query = """
-            SELECT DISTINCT name FROM compounds 
-            ORDER BY name
-            LIMIT 10
-            """
-            cursor.execute(query)
-        else:
-            # Search database for matching compounds
-            query = """
-            SELECT DISTINCT name FROM compounds 
-            WHERE LOWER(name) LIKE LOWER(%s)
-            ORDER BY name
-            LIMIT 10
-            """
-            cursor.execute(query, (f'%{search_term}%',))
+        query = """
+        SELECT DISTINCT name FROM compounds 
+        ORDER BY name
+        """
         
+        cursor.execute(query)
         results = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -76,32 +64,15 @@ def get_compound_suggestions(search_term):
     except Exception as e:
         return []
 
-# Initialize session state
-if 'search_text' not in st.session_state:
-    st.session_state.search_text = ""
+# Get all compounds for the selectbox
+all_compounds = get_all_compounds()
 
-# Text input for searching
-search_input = st.text_input(
-    "Enter compound name:",
-    value=st.session_state.search_text,
-    key="search_input",
-    placeholder="Type to search..."
+# Single selectbox with search capability
+compound_name = st.selectbox(
+    "Enter or select compound name:",
+    options=[""] + all_compounds,
+    key="compound_select"
 )
-
-# Get suggestions dynamically
-suggestions = get_compound_suggestions(search_input)
-
-# Show dropdown only if there are suggestions
-if suggestions:
-    compound_name = st.selectbox(
-        "Select from matches:",
-        options=suggestions,
-        key="compound_dropdown"
-    )
-else:
-    compound_name = search_input.strip()
-    if search_input:
-        st.info("No matches found in database. Will search PubChem.")
 
 if st.button("Generate 3D Structure"):
     if not compound_name:
