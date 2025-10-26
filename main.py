@@ -32,6 +32,7 @@ def insert_compound(name, formula, weight, iupac, smiles):
         query = """
         INSERT INTO compounds (name, formula, molecular_weight, iupac_name, smiles)
         VALUES (%s, %s, %s, %s, %s)
+        ON CONFLICT (name) DO NOTHING
         """
         
         cursor.execute(query, (name, formula, weight, iupac, smiles))
