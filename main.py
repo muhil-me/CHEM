@@ -44,18 +44,41 @@ def insert_compound(name, formula, weight, iupac, smiles):
         st.error(f"Error inserting compound: {e}")
         return False
 
-def get_all_compounds():
-    """Get all compound names from database"""
+def get_compound_suggestions(search_term, limit=10):
+    """Get compound suggestions from database matching the search term"""
+    if not search_term:
+        # Return initial set when empty
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+            
+            query = """
+            SELECT DISTINCT name FROM compounds 
+            ORDER BY name
+            LIMIT %s
+            """
+            
+            cursor.execute(query, (limit,))
+            results = cursor.fetchall()
+            cursor.close()
+            conn.close()
+            
+            return [row[0] for row in results]
+        except Exception as e:
+            return []
+    
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
         query = """
         SELECT DISTINCT name FROM compounds 
+        WHERE LOWER(name) LIKE LOWER(%s)
         ORDER BY name
+        LIMIT %s
         """
         
-        cursor.execute(query)
+        cursor.execute(query, (f'%{search_term}%', limit))
         results = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -64,15 +87,25 @@ def get_all_compounds():
     except Exception as e:
         return []
 
-# Get all compounds for the searchable selectbox
-all_compounds = get_all_compounds()
+# Initialize session state
+if 'search_query' not in st.session_state:
+    st.session_state.search_query = ""
 
-# Single searchable selectbox
+# Text input for dynamic searching
+search_query = st.text_input(
+    "Search compound name:",
+    value=st.session_state.search_query,
+    key="search_box"
+)
+
+# Get dynamic suggestions based on search
+suggestions = get_compound_suggestions(search_query, limit)
+
+# Dropdown with dynamic suggestions
 compound_name = st.selectbox(
-    "Enter or select compound name:",
-    options=[""] + all_compounds,
+    "Select compound:",
+    options=[""] + suggestions,
     index=0,
-    placeholder="Type to search or select from database...",
     key="compound_select"
 )
 
