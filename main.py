@@ -44,7 +44,53 @@ def insert_compound(name, formula, weight, iupac, smiles):
         st.error(f"Error inserting compound: {e}")
         return False
 
-compound_name = st.text_input("Enter compound name: ")
+def get_compound_suggestions(search_term):
+    """Get up to 10 compound suggestions from database matching the search term"""
+    if not search_term:
+        return []
+    
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        
+        query = """
+        SELECT DISTINCT name FROM compounds 
+        WHERE LOWER(name) LIKE LOWER(%s)
+        ORDER BY name
+        LIMIT 10
+        """
+        
+        cursor.execute(query, (f'%{search_term}%',))
+        results = cursor.fetchall()
+        cursor.close()
+        conn.close()
+        
+        return [row[0] for row in results]
+    except Exception as e:
+        return []
+
+# Initialize session state for input
+if 'compound_input' not in st.session_state:
+    st.session_state.compound_input = ""
+
+compound_name = st.text_input("Enter compound name: ", value=st.session_state.compound_input, key="compound_search")
+
+# Get suggestions based on current input
+suggestions = get_compound_suggestions(compound_name)
+
+# Show dropdown with suggestions if available and input is not empty
+if compound_name and suggestions:
+    selected = st.selectbox(
+        "Select from database (or continue typing for custom entry):",
+        options=[""] + suggestions,
+        key="compound_select"
+    )
+    
+    # Update the compound name if user selects from dropdown
+    if selected:
+        compound_name = selected
+        st.session_state.compound_input = selected
+
 compound_name = compound_name.rstrip()
 
 if st.button("Generate 3D Structure"):
