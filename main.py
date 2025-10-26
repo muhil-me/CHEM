@@ -99,7 +99,7 @@ search_query = st.text_input(
 )
 
 # Get dynamic suggestions based on search
-suggestions = get_compound_suggestions(search_query, limit)
+suggestions = get_compound_suggestions(search_query, limit=10)
 
 # Dropdown with dynamic suggestions
 compound_name = st.selectbox(
