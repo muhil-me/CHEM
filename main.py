@@ -44,41 +44,30 @@ def insert_compound(name, formula, weight, iupac, smiles):
         st.error(f"Error inserting compound: {e}")
         return False
 
-def get_compound_suggestions(search_term, limit=10):
+def get_compound_suggestions(search_term):
     """Get compound suggestions from database matching the search term"""
-    if not search_term:
-        # Return initial set when empty
-        try:
-            conn = get_db_connection()
-            cursor = conn.cursor()
-            
-            query = """
-            SELECT DISTINCT name FROM compounds 
-            ORDER BY name
-            LIMIT %s
-            """
-            
-            cursor.execute(query, (limit,))
-            results = cursor.fetchall()
-            cursor.close()
-            conn.close()
-            
-            return [row[0] for row in results]
-        except Exception as e:
-            return []
-    
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
         
-        query = """
-        SELECT DISTINCT name FROM compounds 
-        WHERE LOWER(name) LIKE LOWER(%s)
-        ORDER BY name
-        LIMIT %s
-        """
+        if not search_term:
+            # Return first 10 compounds when no search term
+            query = """
+            SELECT DISTINCT name FROM compounds 
+            ORDER BY name
+            LIMIT 10
+            """
+            cursor.execute(query)
+        else:
+            # Search database for matching compounds
+            query = """
+            SELECT DISTINCT name FROM compounds 
+            WHERE LOWER(name) LIKE LOWER(%s)
+            ORDER BY name
+            LIMIT 10
+            """
+            cursor.execute(query, (f'%{search_term}%',))
         
-        cursor.execute(query, (f'%{search_term}%', limit))
         results = cursor.fetchall()
         cursor.close()
         conn.close()
@@ -88,26 +77,31 @@ def get_compound_suggestions(search_term, limit=10):
         return []
 
 # Initialize session state
-if 'search_query' not in st.session_state:
-    st.session_state.search_query = ""
+if 'search_text' not in st.session_state:
+    st.session_state.search_text = ""
 
-# Text input for dynamic searching
-search_query = st.text_input(
-    "Search compound name:",
-    value=st.session_state.search_query,
-    key="search_box"
+# Text input for searching
+search_input = st.text_input(
+    "Enter compound name:",
+    value=st.session_state.search_text,
+    key="search_input",
+    placeholder="Type to search..."
 )
 
-# Get dynamic suggestions based on search
-suggestions = get_compound_suggestions(search_query, limit=10)
+# Get suggestions dynamically
+suggestions = get_compound_suggestions(search_input)
 
-# Dropdown with dynamic suggestions
-compound_name = st.selectbox(
-    "Select compound:",
-    options=[""] + suggestions,
-    index=0,
-    key="compound_select"
-)
+# Show dropdown only if there are suggestions
+if suggestions:
+    compound_name = st.selectbox(
+        "Select from matches:",
+        options=suggestions,
+        key="compound_dropdown"
+    )
+else:
+    compound_name = search_input.strip()
+    if search_input:
+        st.info("No matches found in database. Will search PubChem.")
 
 if st.button("Generate 3D Structure"):
     if not compound_name:
