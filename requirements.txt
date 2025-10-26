@@ -3,4 +3,4 @@ pubchempy
 rdkit
 py3Dmol
 pandas
-psycopg2
+psycopg2-binary
