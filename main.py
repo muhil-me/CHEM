@@ -52,7 +52,7 @@ def get_all_compounds():
         
         query = """
         SELECT DISTINCT name FROM compounds 
-        ORDER BY name LIMIT 10
+        ORDER BY name
         """
         
         cursor.execute(query)
