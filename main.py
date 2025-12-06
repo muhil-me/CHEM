@@ -15,9 +15,10 @@ st.markdown("Choose an option below:")
 option = st.selectbox("Select Mode", ["Generate 3D Structure", "Draw Molecule"])
 
 if option == "Generate 3D Structure":
-    compound_name = st.text_input("Enter compound name: ")
+    st.header("Generate 3D Structure")
+    compound_name = st.text_input("Enter compound name: ", key="compound_name_input")
     compound_name = compound_name.rstrip()
-    if st.button("Generate 3D Structure"):
+    if st.button("Generate 3D Structure", key="generate_3d_btn"):
         try:
             conn = get_db_connection()
             cursor = conn.cursor(cursor_factory=RealDictCursor)
@@ -91,7 +92,7 @@ if option == "Generate 3D Structure":
 
 elif option == "Draw Molecule":
     st.header("Draw a molecule (Ketcher)")
-    smiles_drawn = st_ketcher()
+    smiles_drawn = st_ketcher(key="ketcher_draw")
     if smiles_drawn:
         st.success(f"SMILES: {smiles_drawn}")
         try:
