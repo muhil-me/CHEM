@@ -20,6 +20,7 @@ st.markdown("""
     header {visibility: hidden;}
     [data-testid="stToolbar"] {visibility: hidden;}
     .stDeployButton {visibility: hidden;}
+    .stTitle {border-bottom: none !important;}
     </style>
     """, unsafe_allow_html=True)
 

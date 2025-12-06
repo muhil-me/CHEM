@@ -37,7 +37,6 @@ html, body {
     font-weight: 700 !important;
     margin-bottom: 1.5rem !important;
     text-align: center;
-    border-bottom: 3px solid var(--primary-color);
     padding-bottom: 1rem;
 }
 
@@ -69,8 +68,8 @@ html, body {
 .stTextArea > div > div > textarea {
     border: 2px solid var(--border-color) !important;
     border-radius: 6px !important;
-    padding: 0.75rem !important;
-    font-size: 1rem !important;
+    padding: 1rem !important;
+    font-size: 1.1rem !important;
     transition: var(--transition) !important;
     background-color: #ffffff !important;
     color: var(--dark-color) !important;
@@ -100,8 +99,8 @@ html, body {
     color: white !important;
     border: none !important;
     border-radius: 6px !important;
-    padding: 0.75rem 1.5rem !important;
-    font-size: 1rem !important;
+    padding: 1rem 2rem !important;
+    font-size: 1.1rem !important;
     font-weight: 600 !important;
     cursor: pointer !important;
     transition: var(--transition) !important;
