@@ -1,6 +1,6 @@
 /* Professional Styling for Molecular Visualizer */
 
-/* Root Variables */
+/* Root Variables (Dark Theme) */
 :root {
     --primary-color: #1f77b4;
     --secondary-color: #ff7f0e;
@@ -8,10 +8,13 @@
     --danger-color: #d62728;
     --warning-color: #ff9800;
     --info-color: #17a2b8;
-    --dark-color: #1a1a1a;
-    --light-color: #f5f5f5;
-    --border-color: #e0e0e0;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --text-color: #E6F0FA; /* main text on dark background */
+    --bg-color: #0F1724; /* page background */
+    --card-bg: #0B1A2B; /* panels/cards */
+    --input-bg: #07121A; /* inputs */
+    --muted-color: #9FB4C9;
+    --border-color: rgba(255,255,255,0.06);
+    --shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
     --transition: all 0.3s ease;
     --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -25,8 +28,8 @@
 
 html, body {
     font-family: var(--font-family);
-    background-color: #ffffff;
-    color: var(--dark-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     line-height: 1.6;
 }
 
@@ -66,13 +69,13 @@ html, body {
 .stNumberInput > div > div > input,
 .stSelectbox > div > div > select,
 .stTextArea > div > div > textarea {
-    border: 2px solid var(--border-color) !important;
-    border-radius: 6px !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    border-radius: 8px !important;
     padding: 1rem !important;
     font-size: 1.1rem !important;
     transition: var(--transition) !important;
-    background-color: #ffffff !important;
-    color: var(--dark-color) !important;
+    background-color: var(--input-bg) !important;
+    color: var(--text-color) !important;
 }
 
 .stTextInput > div > div > input:focus,
@@ -328,10 +331,11 @@ html, body {
 
 /* 3D Visualization Container */
 .stIFrame {
-    border: 1px solid var(--border-color) !important;
+    border: none !important;
     border-radius: 6px !important;
-    box-shadow: var(--shadow) !important;
+    box-shadow: none !important;
     overflow: hidden;
+    background-color: transparent !important;
 }
 
 /* Two-Column Layout for Structure and Legend */
