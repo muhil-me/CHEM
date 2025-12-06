@@ -1,0 +1,389 @@
+/* Professional Styling for Molecular Visualizer */
+
+/* Root Variables */
+:root {
+    --primary-color: #1f77b4;
+    --secondary-color: #ff7f0e;
+    --success-color: #2ca02c;
+    --danger-color: #d62728;
+    --warning-color: #ff9800;
+    --info-color: #17a2b8;
+    --dark-color: #1a1a1a;
+    --light-color: #f5f5f5;
+    --border-color: #e0e0e0;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+    --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    font-family: var(--font-family);
+    background-color: #ffffff;
+    color: var(--dark-color);
+    line-height: 1.6;
+}
+
+/* Header & Title Styling */
+.stTitle {
+    color: var(--primary-color) !important;
+    font-size: 2.5rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 1.5rem !important;
+    text-align: center;
+    border-bottom: 3px solid var(--primary-color);
+    padding-bottom: 1rem;
+}
+
+.stMarkdown h1 {
+    color: var(--primary-color) !important;
+    font-weight: 700;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.stMarkdown h2 {
+    color: var(--secondary-color) !important;
+    font-weight: 600;
+    margin-top: 1.2rem;
+    margin-bottom: 0.8rem;
+}
+
+.stMarkdown h3 {
+    color: var(--dark-color) !important;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.6rem;
+}
+
+/* Input Fields */
+.stTextInput > div > div > input,
+.stNumberInput > div > div > input,
+.stSelectbox > div > div > select,
+.stTextArea > div > div > textarea {
+    border: 2px solid var(--border-color) !important;
+    border-radius: 6px !important;
+    padding: 0.75rem !important;
+    font-size: 1rem !important;
+    transition: var(--transition) !important;
+    background-color: #ffffff !important;
+    color: var(--dark-color) !important;
+}
+
+.stTextInput > div > div > input:focus,
+.stNumberInput > div > div > input:focus,
+.stSelectbox > div > div > select:focus,
+.stTextArea > div > div > textarea:focus {
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 3px rgba(31, 119, 180, 0.1) !important;
+    outline: none !important;
+}
+
+.stTextInput > div > label,
+.stNumberInput > div > label,
+.stSelectbox > div > label,
+.stTextArea > div > label {
+    font-weight: 600 !important;
+    color: var(--dark-color) !important;
+    margin-bottom: 0.5rem !important;
+}
+
+/* Button Styling */
+.stButton > button {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: var(--transition) !important;
+    box-shadow: var(--shadow) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stButton > button:hover {
+    background-color: #1565a0 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(31, 119, 180, 0.3) !important;
+}
+
+.stButton > button:active {
+    transform: translateY(0) !important;
+    box-shadow: var(--shadow) !important;
+}
+
+/* Secondary Button Variant */
+.stButton > button.secondary {
+    background-color: var(--secondary-color) !important;
+}
+
+.stButton > button.secondary:hover {
+    background-color: #e67e0e !important;
+}
+
+/* Download Button */
+.stDownloadButton > button {
+    background-color: var(--success-color) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 6px !important;
+    padding: 0.75rem 1.5rem !important;
+    font-weight: 600 !important;
+    transition: var(--transition) !important;
+    box-shadow: var(--shadow) !important;
+}
+
+.stDownloadButton > button:hover {
+    background-color: #228a22 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 12px rgba(44, 160, 44, 0.3) !important;
+}
+
+/* Container & Layout */
+.stContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.stColumns {
+    gap: 1.5rem !important;
+}
+
+/* Cards & Expanders */
+.stExpander {
+    border: 2px solid var(--border-color) !important;
+    border-radius: 6px !important;
+    background-color: #fafafa !important;
+}
+
+.stExpander > div > div > button {
+    font-weight: 600 !important;
+    color: var(--primary-color) !important;
+}
+
+/* Success, Warning, Error, Info Messages */
+.stSuccess {
+    background-color: #d4edda !important;
+    border: 1px solid #c3e6cb !important;
+    border-left: 4px solid var(--success-color) !important;
+    border-radius: 6px !important;
+    padding: 1rem !important;
+    color: #155724 !important;
+}
+
+.stWarning {
+    background-color: #fff3cd !important;
+    border: 1px solid #ffeeba !important;
+    border-left: 4px solid var(--warning-color) !important;
+    border-radius: 6px !important;
+    padding: 1rem !important;
+    color: #856404 !important;
+}
+
+.stError {
+    background-color: #f8d7da !important;
+    border: 1px solid #f5c6cb !important;
+    border-left: 4px solid var(--danger-color) !important;
+    border-radius: 6px !important;
+    padding: 1rem !important;
+    color: #721c24 !important;
+}
+
+.stInfo {
+    background-color: #d1ecf1 !important;
+    border: 1px solid #bee5eb !important;
+    border-left: 4px solid var(--info-color) !important;
+    border-radius: 6px !important;
+    padding: 1rem !important;
+    color: #0c5460 !important;
+}
+
+/* Markdown Text */
+.stMarkdown {
+    color: var(--dark-color);
+    line-height: 1.8;
+}
+
+.stMarkdown p {
+    margin-bottom: 1rem;
+    color: #333333;
+}
+
+.stMarkdown code {
+    background-color: #f0f0f0;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    color: var(--danger-color);
+}
+
+.stMarkdown pre {
+    background-color: #1e1e1e;
+    color: #d4d4d4;
+    padding: 1.5rem;
+    border-radius: 6px;
+    overflow-x: auto;
+    line-height: 1.5;
+}
+
+.stMarkdown a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.stMarkdown a:hover {
+    color: #1565a0;
+    text-decoration: underline;
+}
+
+/* Tables */
+.stDataframe {
+    border-collapse: collapse !important;
+    border-radius: 6px !important;
+    overflow: hidden;
+}
+
+.stDataframe table {
+    width: 100%;
+    border: 1px solid var(--border-color) !important;
+}
+
+.stDataframe thead th {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    padding: 1rem !important;
+    font-weight: 600 !important;
+    text-align: left;
+}
+
+.stDataframe tbody tr {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.stDataframe tbody tr:hover {
+    background-color: #f5f5f5 !important;
+}
+
+.stDataframe td {
+    padding: 0.75rem 1rem !important;
+    color: var(--dark-color) !important;
+}
+
+/* Spinner/Loader */
+.stSpinner {
+    color: var(--primary-color) !important;
+}
+
+/* Sidebar */
+.stSidebar {
+    background-color: #f8f9fa !important;
+    border-right: 1px solid var(--border-color);
+}
+
+.stSidebar .stMarkdown {
+    color: var(--dark-color);
+}
+
+/* Slider */
+.stSlider > div > div > div > div {
+    background-color: var(--primary-color) !important;
+}
+
+/* Progress Bar */
+.stProgress > div > div > div > div {
+    background-color: var(--success-color) !important;
+}
+
+/* Metric Cards */
+.stMetric {
+    background-color: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+.stMetric > div > span:first-child {
+    color: #666666;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.stMetric > div > span:nth-child(2) {
+    color: var(--primary-color);
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+/* 3D Visualization Container */
+.stIFrame {
+    border: 1px solid var(--border-color) !important;
+    border-radius: 6px !important;
+    box-shadow: var(--shadow) !important;
+    overflow: hidden;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .stTitle {
+        font-size: 1.8rem !important;
+    }
+
+    .stMarkdown h1 {
+        font-size: 1.5rem !important;
+    }
+
+    .stButton > button {
+        width: 100%;
+        padding: 1rem !important;
+    }
+
+    .stColumns {
+        flex-direction: column !important;
+    }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #1565a0;
+}
+
+/* Print Styles */
+@media print {
+    .stButton,
+    .stDownloadButton,
+    [data-testid="stToolbar"] {
+        display: none !important;
+    }
+
+    body {
+        background-color: white;
+        color: black;
+    }
+}
