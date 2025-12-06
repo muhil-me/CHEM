@@ -8,23 +8,101 @@ import time
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
-st.title("Molecular visualiser")
 
-# --- Ketcher Drawing Module ---
-st.header("Draw a molecule (Ketcher)")
-smiles_drawn = st_ketcher()
-if smiles_drawn:
-    st.success(f"SMILES: {smiles_drawn}")
-    # Try to fetch compound name from PubChem
-    try:
-        compounds = pcp.get_compounds(smiles_drawn, 'smiles')
-        if compounds:
-            compound = compounds[0]
-            st.info(f"Compound Name: {compound.iupac_name or compound.synonyms[0] if compound.synonyms else 'Unknown'}")
-        else:
-            st.warning("No compound found for this SMILES.")
-    except Exception as e:
-        st.error(f"Error fetching compound name: {e}")
+# --- Landing Page ---
+st.title("Molecular visualiser")
+st.markdown("Choose an option below:")
+option = st.selectbox("Select Mode", ["Generate 3D Structure", "Draw Molecule"])
+
+if option == "Generate 3D Structure":
+    compound_name = st.text_input("Enter compound name: ")
+    compound_name = compound_name.rstrip()
+    if st.button("Generate 3D Structure"):
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
+            query = "SELECT * FROM compounds WHERE LOWER(name) = LOWER(%s)"
+            cursor.execute(query, (compound_name,))
+            result = cursor.fetchone()
+            if result:
+                smiles = result['smiles']
+                st.subheader("Compound Information")
+                st.write(f"**Molecular Formula:** {result['formula']}")
+                st.write(f"**Molecular Weight:** {result['molecular_weight']}")
+                st.write(f"**IUPAC Name:** {result['iupac_name']}")
+                st.write(f"**SMILES:** {result['smiles']}")
+                st.info("✅ Data from local database")
+                if '.' in smiles or '+' in smiles or '-' in smiles:
+                    st.write("3D structure not available for ionic compounds like salts.")
+                else:
+                    mol = Chem.MolFromSmiles(smiles)
+                    mol = Chem.AddHs(mol)
+                    AllChem.EmbedMolecule(mol)
+                    AllChem.MMFFOptimizeMolecule(mol)
+                    view = py3Dmol.view(width=400, height=300)
+                    view.addModel(Chem.MolToMolBlock(mol), 'mol')
+                    view.setStyle({'stick': {}})
+                    view.zoomTo()
+                    viewer_html = view._make_html()
+                    st.components.v1.html(viewer_html, height=450)
+            else:
+                with st.spinner('🌐 Fetching data from PubChem...'):
+                    time.sleep(0.3)
+                    compounds = pcp.get_compounds(compound_name, 'name')
+                    if compounds:
+                        compound = compounds[0]
+                        smiles = compound.isomeric_smiles
+                        st.subheader("Compound Information")
+                        st.write(f"**Molecular Formula:** {compound.molecular_formula}")
+                        st.write(f"**Molecular Weight:** {compound.molecular_weight}")
+                        st.write(f"**IUPAC Name:** {compound.iupac_name}")
+                        st.write(f"**SMILES:** {smiles}")
+                        with st.spinner('💾 Adding to database...'):
+                            success = insert_compound(
+                                name=compound_name,
+                                formula=compound.molecular_formula,
+                                weight=compound.molecular_weight,
+                                iupac=compound.iupac_name,
+                                smiles=smiles
+                            )
+                            if success:
+                                st.success("✅ Compound added to database!")
+                        st.warning("📡 Data sourced from PubChem. There may be discrepancies with chemical formula.")
+                        if '.' in smiles or '+' in smiles or '-' in smiles:
+                            st.write("3D structure not available for ionic compounds like salts.")
+                        else:
+                            with st.spinner('🧬 Generating 3D structure...'):
+                                mol = Chem.MolFromSmiles(smiles)
+                                mol = Chem.AddHs(mol)
+                                AllChem.EmbedMolecule(mol)
+                                AllChem.MMFFOptimizeMolecule(mol)
+                                view = py3Dmol.view(width=400, height=300)
+                                view.addModel(Chem.MolToMolBlock(mol), 'mol')
+                                view.setStyle({'stick': {}})
+                                view.zoomTo()
+                                viewer_html = view._make_html()
+                                st.components.v1.html(viewer_html, height=450)
+                    else:
+                        st.error("❌ Compound not found in the database or PubChem.")
+            cursor.close()
+            conn.close()
+        except Exception as e:
+            st.error(f"Error: {e}")
+
+elif option == "Draw Molecule":
+    st.header("Draw a molecule (Ketcher)")
+    smiles_drawn = st_ketcher()
+    if smiles_drawn:
+        st.success(f"SMILES: {smiles_drawn}")
+        try:
+            compounds = pcp.get_compounds(smiles_drawn, 'smiles')
+            if compounds:
+                compound = compounds[0]
+                st.info(f"Compound Name: {compound.iupac_name or compound.synonyms[0] if compound.synonyms else 'Unknown'}")
+            else:
+                st.warning("No compound found for this SMILES.")
+        except Exception as e:
+            st.error(f"Error fetching compound name: {e}")
 
 # Load external CSS file
 with open('style.css') as f:
