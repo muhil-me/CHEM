@@ -15,7 +15,6 @@ st.markdown("Choose an option below:")
 option = st.selectbox("Select Mode", ["Generate 3D Structure", "Draw Molecule"])
 
 if option == "Generate 3D Structure":
-    st.header("Generate 3D Structure")
     compound_name = st.text_input("Enter compound name: ", key="compound_name_input")
     compound_name = compound_name.rstrip()
     if st.button("Generate 3D Structure", key="generate_3d_btn"):
