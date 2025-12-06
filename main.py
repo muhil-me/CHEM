@@ -2,12 +2,29 @@ from rdkit import Chem
 from rdkit.Chem import AllChem
 import py3Dmol
 import streamlit as st
+from streamlit_ketcher import st_ketcher
 import pubchempy as pcp
 import time
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
 st.title("Molecular visualiser")
+
+# --- Ketcher Drawing Module ---
+st.header("Draw a molecule (Ketcher)")
+smiles_drawn = st_ketcher()
+if smiles_drawn:
+    st.success(f"SMILES: {smiles_drawn}")
+    # Try to fetch compound name from PubChem
+    try:
+        compounds = pcp.get_compounds(smiles_drawn, 'smiles')
+        if compounds:
+            compound = compounds[0]
+            st.info(f"Compound Name: {compound.iupac_name or compound.synonyms[0] if compound.synonyms else 'Unknown'}")
+        else:
+            st.warning("No compound found for this SMILES.")
+    except Exception as e:
+        st.error(f"Error fetching compound name: {e}")
 
 # Load external CSS file
 with open('style.css') as f:
