@@ -86,7 +86,85 @@ if st.button("Generate 3D Structure"):
                 view.zoomTo()
                 
                 viewer_html = view._make_html()
-                st.components.v1.html(viewer_html, height=450)
+                
+                # Display in two-column layout
+                col1, col2 = st.columns(2)
+                
+                with col1:
+                    st.markdown('<div class="structure-column">', unsafe_allow_html=True)
+                    st.markdown('<h3>3D Molecular Structure</h3>', unsafe_allow_html=True)
+                    st.components.v1.html(viewer_html, height=450)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                
+                with col2:
+                    st.markdown('<div class="legend-column">', unsafe_allow_html=True)
+                    st.markdown('<h3>Bond & Atom Legend</h3>', unsafe_allow_html=True)
+                    
+                    # Bond Colors Legend
+                    st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                    st.markdown('<div class="bond-color-swatch" style="background-color: #FFD700;"></div>', unsafe_allow_html=True)
+                    st.markdown('''
+                    <div class="bond-description">
+                        <div class="bond-name">Single Bond (C-C)</div>
+                        <div class="bond-type">Single covalent bond</div>
+                        <div class="bond-details">One shared electron pair</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                    st.markdown('<div class="bond-color-swatch" style="background-color: #FF6B6B;"></div>', unsafe_allow_html=True)
+                    st.markdown('''
+                    <div class="bond-description">
+                        <div class="bond-name">Double Bond (C=C)</div>
+                        <div class="bond-type">Double covalent bond</div>
+                        <div class="bond-details">Two shared electron pairs</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                    st.markdown('<div class="bond-color-swatch" style="background-color: #4ECDC4;"></div>', unsafe_allow_html=True)
+                    st.markdown('''
+                    <div class="bond-description">
+                        <div class="bond-name">Triple Bond (C≡C)</div>
+                        <div class="bond-type">Triple covalent bond</div>
+                        <div class="bond-details">Three shared electron pairs</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                    st.markdown('<div class="bond-color-swatch" style="background-color: #95E1D3;"></div>', unsafe_allow_html=True)
+                    st.markdown('''
+                    <div class="bond-description">
+                        <div class="bond-name">C-H Bond</div>
+                        <div class="bond-type">Hydrogen bond</div>
+                        <div class="bond-details">Carbon-hydrogen single bond</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                    st.markdown('<div class="bond-color-swatch" style="background-color: #F38181;"></div>', unsafe_allow_html=True)
+                    st.markdown('''
+                    <div class="bond-description">
+                        <div class="bond-name">N/O Bonds</div>
+                        <div class="bond-type">Heteroatom bonds</div>
+                        <div class="bond-details">Nitrogen or oxygen single bonds</div>
+                    </div>
+                    ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    
+                    st.markdown('<div class="legend-summary">', unsafe_allow_html=True)
+                    st.markdown('''
+                    <h4>💡 Understanding the Structure</h4>
+                    <p><strong>Stick representation:</strong> Shows atoms as intersections and bonds as lines</p>
+                    <p><strong>Bond strength:</strong> Indicated by line multiplicity (single, double, triple)</p>
+                    <p><strong>Interactions:</strong> Colors help identify different bond types and atomic connections</p>
+                    ''', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
         
         else:
             # Not found in database, query PubChem
@@ -136,7 +214,85 @@ if st.button("Generate 3D Structure"):
                             view.zoomTo()
                             
                             viewer_html = view._make_html()
-                            st.components.v1.html(viewer_html, height=450)
+                            
+                            # Display in two-column layout
+                            col1, col2 = st.columns(2)
+                            
+                            with col1:
+                                st.markdown('<div class="structure-column">', unsafe_allow_html=True)
+                                st.markdown('<h3>3D Molecular Structure</h3>', unsafe_allow_html=True)
+                                st.components.v1.html(viewer_html, height=450)
+                                st.markdown('</div>', unsafe_allow_html=True)
+                            
+                            with col2:
+                                st.markdown('<div class="legend-column">', unsafe_allow_html=True)
+                                st.markdown('<h3>Bond & Atom Legend</h3>', unsafe_allow_html=True)
+                                
+                                # Bond Colors Legend
+                                st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                                st.markdown('<div class="bond-color-swatch" style="background-color: #FFD700;"></div>', unsafe_allow_html=True)
+                                st.markdown('''
+                                <div class="bond-description">
+                                    <div class="bond-name">Single Bond (C-C)</div>
+                                    <div class="bond-type">Single covalent bond</div>
+                                    <div class="bond-details">One shared electron pair</div>
+                                </div>
+                                ''', unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
+                                
+                                st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                                st.markdown('<div class="bond-color-swatch" style="background-color: #FF6B6B;"></div>', unsafe_allow_html=True)
+                                st.markdown('''
+                                <div class="bond-description">
+                                    <div class="bond-name">Double Bond (C=C)</div>
+                                    <div class="bond-type">Double covalent bond</div>
+                                    <div class="bond-details">Two shared electron pairs</div>
+                                </div>
+                                ''', unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
+                                
+                                st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                                st.markdown('<div class="bond-color-swatch" style="background-color: #4ECDC4;"></div>', unsafe_allow_html=True)
+                                st.markdown('''
+                                <div class="bond-description">
+                                    <div class="bond-name">Triple Bond (C≡C)</div>
+                                    <div class="bond-type">Triple covalent bond</div>
+                                    <div class="bond-details">Three shared electron pairs</div>
+                                </div>
+                                ''', unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
+                                
+                                st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                                st.markdown('<div class="bond-color-swatch" style="background-color: #95E1D3;"></div>', unsafe_allow_html=True)
+                                st.markdown('''
+                                <div class="bond-description">
+                                    <div class="bond-name">C-H Bond</div>
+                                    <div class="bond-type">Hydrogen bond</div>
+                                    <div class="bond-details">Carbon-hydrogen single bond</div>
+                                </div>
+                                ''', unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
+                                
+                                st.markdown('<div class="legend-item">', unsafe_allow_html=True)
+                                st.markdown('<div class="bond-color-swatch" style="background-color: #F38181;"></div>', unsafe_allow_html=True)
+                                st.markdown('''
+                                <div class="bond-description">
+                                    <div class="bond-name">N/O Bonds</div>
+                                    <div class="bond-type">Heteroatom bonds</div>
+                                    <div class="bond-details">Nitrogen or oxygen single bonds</div>
+                                </div>
+                                ''', unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
+                                
+                                st.markdown('<div class="legend-summary">', unsafe_allow_html=True)
+                                st.markdown('''
+                                <h4>💡 Understanding the Structure</h4>
+                                <p><strong>Stick representation:</strong> Shows atoms as intersections and bonds as lines</p>
+                                <p><strong>Bond strength:</strong> Indicated by line multiplicity (single, double, triple)</p>
+                                <p><strong>Interactions:</strong> Colors help identify different bond types and atomic connections</p>
+                                ''', unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
+                                st.markdown('</div>', unsafe_allow_html=True)
                 
                 else:
                     st.error("❌ Compound not found in the database or PubChem.")

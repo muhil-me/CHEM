@@ -335,6 +335,151 @@ html, body {
     overflow: hidden;
 }
 
+/* Two-Column Layout for Structure and Legend */
+.structure-legend-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin: 2rem 0;
+    align-items: start;
+}
+
+.structure-column {
+    background-color: #fafafa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+}
+
+.structure-column h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.structure-column .stIFrame {
+    width: 100%;
+    height: 500px;
+    min-height: 500px;
+}
+
+/* Legend Column */
+.legend-column {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 2px solid var(--primary-color);
+    box-shadow: var(--shadow);
+}
+
+.legend-column h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    font-size: 1.3rem;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    padding: 0.75rem;
+    background-color: #f9f9f9;
+    border-radius: 6px;
+    border-left: 4px solid var(--border-color);
+    transition: var(--transition);
+}
+
+.legend-item:hover {
+    background-color: #f0f0f0;
+    border-left-color: var(--primary-color);
+    transform: translateX(4px);
+}
+
+.bond-color-swatch {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    margin-right: 1rem;
+    border: 2px solid var(--border-color);
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.bond-description {
+    flex: 1;
+}
+
+.bond-name {
+    font-weight: 700;
+    color: var(--dark-color);
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+}
+
+.bond-type {
+    color: #666666;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+}
+
+.bond-details {
+    color: #888888;
+    font-size: 0.85rem;
+    font-style: italic;
+}
+
+/* Legend Summary Box */
+.legend-summary {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1.5rem;
+    border: 1px solid var(--border-color);
+}
+
+.legend-summary h4 {
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.legend-summary p {
+    color: #333333;
+    font-size: 0.85rem;
+    margin: 0.3rem 0;
+    line-height: 1.5;
+}
+
+/* Bond Type Examples */
+.bond-types-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    margin-top: 1rem;
+}
+
+.bond-type-card {
+    background-color: #ffffff;
+    padding: 0.8rem;
+    border-radius: 4px;
+    border-left: 3px solid var(--primary-color);
+    font-size: 0.9rem;
+}
+
+.bond-type-card strong {
+    color: var(--primary-color);
+}
+
+.bond-type-card span {
+    color: #666666;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .stTitle {
