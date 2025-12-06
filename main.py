@@ -78,18 +78,6 @@ if option == "Generate 3D Structure":
                                 AllChem.MMFFOptimizeMolecule(mol)
                                 view = py3Dmol.view(width=400, height=300)
                                 view.addModel(Chem.MolToMolBlock(mol), 'mol')
-                                view.setStyle({'stick': {}})
-                                view.zoomTo()
-                                viewer_html = view._make_html()
-                                st.components.v1.html(viewer_html, height=450)
-                    else:
-                        st.error("❌ Compound not found in the database or PubChem.")
-            cursor.close()
-            conn.close()
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-elif option == "Draw Molecule":
     st.header("Draw a molecule (Ketcher)")
     smiles_drawn = st_ketcher(key="ketcher_draw")
     if smiles_drawn:
