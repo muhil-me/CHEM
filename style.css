@@ -338,6 +338,44 @@ html, body {
     background-color: transparent !important;
 }
 
+/* Dark theme overrides for components */
+.stExpander,
+.stMetric,
+.structure-column,
+.legend-column,
+.bond-type-card,
+.stSidebar {
+    background-color: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+}
+
+.stMetric > div > span:first-child {
+    color: var(--muted-color);
+}
+
+.stMetric > div > span:nth-child(2) {
+    color: var(--primary-color);
+}
+
+.stMarkdown p { color: var(--text-color); }
+.stMarkdown code { background-color: rgba(255,255,255,0.04); color: #ffd; }
+.stDataframe thead th { background-color: rgba(31,119,180,0.18) !important; }
+.stDataframe tbody tr:hover { background-color: rgba(255,255,255,0.02) !important; }
+.stDataframe td { color: var(--text-color) !important; }
+
+.legend-item { background-color: rgba(255,255,255,0.02); border-left-color: rgba(255,255,255,0.04); }
+.legend-summary { background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); border: 1px solid var(--border-color); }
+
+/* Scrollbar tweaks for dark mode */
+::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+::-webkit-scrollbar-thumb { background: rgba(31,119,180,0.7); }
+
+/* Ensure py3Dmol viewer background blends */
+.stIFrame iframe, .stIFrame embed {
+    background: transparent !important;
+}
+
 /* Two-Column Layout for Structure and Legend */
 .structure-legend-container {
     display: grid;
