@@ -109,12 +109,12 @@ st.markdown("<p style='text-align: center; color: #666; font-size: 1.2rem; margi
 
 # Mode selection
 st.markdown("---")
-option = st.selectbox("🔍 Select Mode", ["Generate 3D Structure", "Draw Molecule"], index=0)
+option = st.selectbox(" Select Mode", ["Generate 3D Structure", "Draw Molecule"], index=0)
 st.markdown("---")
 
 # ==================== MODE 1: GENERATE 3D STRUCTURE ====================
 if option == "Generate 3D Structure":
-    st.subheader("🔬 Search by Compound Name")
+    st.subheader(" Search by Compound Name")
     
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
@@ -126,7 +126,7 @@ if option == "Generate 3D Structure":
         )
         compound_name = compound_name.strip()
         
-        generate_btn = st.button("🔬 Generate 3D Structure", key="generate_3d_btn", use_container_width=True)
+        generate_btn = st.button(" Generate 3D Structure", key="generate_3d_btn", use_container_width=True)
     
     if generate_btn:
         if not compound_name:
@@ -161,7 +161,7 @@ if option == "Generate 3D Structure":
                 
                 else:
                     # Not found in database, query PubChem
-                    with st.spinner('🌐 Fetching data from PubChem...'):
+                    with st.spinner(' Fetching data from PubChem...'):
                         time.sleep(0.3)  # Rate limiting
                         
                         compounds = pcp.get_compounds(compound_name, 'name')
@@ -170,9 +170,9 @@ if option == "Generate 3D Structure":
                             compound = compounds[0]
                             smiles = compound.isomeric_smiles
                             
-                            st.warning("📡 Data sourced from PubChem")
+                            st.warning(" Data sourced from PubChem")
                             
-                            st.markdown("### 📊 Compound Information")
+                            st.markdown("###  Compound Information")
                             compound_data = {
                                 'formula': compound.molecular_formula,
                                 'molecular_weight': compound.molecular_weight,
@@ -197,7 +197,7 @@ if option == "Generate 3D Structure":
                             if is_ionic_compound(smiles):
                                 st.warning(" 3D structure not available for ionic compounds like salts.")
                             else:
-                                st.markdown("### 🔬 3D Molecular Structure")
+                                st.markdown("###  3D Molecular Structure")
                                 with st.spinner('🧬 Generating 3D structure...'):
                                     viewer_html = generate_3d_structure(smiles)
                                     if viewer_html:
@@ -227,7 +227,7 @@ elif option == "Draw Molecule":
         with col1:
             st.markdown("###  Compound Information")
             try:
-                with st.spinner('🔍 Identifying compound...'):
+                with st.spinner(' Identifying compound...'):
                     compounds = pcp.get_compounds(smiles_drawn, 'smiles')
                     
                     if compounds:
@@ -243,13 +243,13 @@ elif option == "Draw Molecule":
                         display_compound_info(compound_data)
                     else:
                         st.warning(" No compound found for this SMILES in PubChem database.")
-                        st.markdown(f"**🔗 SMILES:** `{smiles_drawn}`")
+                        st.markdown(f"** SMILES:** `{smiles_drawn}`")
                         
             except Exception as e:
                 st.error(f" Error fetching compound information: {e}")
         
         with col2:
-            st.markdown("### 🔬 3D Structure")
+            st.markdown("###  3D Structure")
             if not is_ionic_compound(smiles_drawn):
                 with st.spinner('🧬 Generating 3D structure...'):
                     viewer_html = generate_3d_structure(smiles_drawn)
