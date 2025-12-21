@@ -92,12 +92,12 @@ def display_compound_info(compound_data):
     col1, col2 = st.columns(2)
     
     with col1:
-        st.markdown(f"**🧪 Molecular Formula:** `{compound_data.get('formula', 'N/A')}`")
-        st.markdown(f"**⚖️ Molecular Weight:** `{compound_data.get('molecular_weight', 'N/A')} g/mol`")
+        st.markdown(f"** Molecular Formula:** `{compound_data.get('formula', 'N/A')}`")
+        st.markdown(f"** Molecular Weight:** `{compound_data.get('molecular_weight', 'N/A')} g/mol`")
     
     with col2:
-        st.markdown(f"**📝 IUPAC Name:** {compound_data.get('iupac_name', 'N/A')}")
-        st.markdown(f"**🔗 SMILES:** `{compound_data.get('smiles', 'N/A')}`")
+        st.markdown(f"** IUPAC Name:** {compound_data.get('iupac_name', 'N/A')}")
+        st.markdown(f"** SMILES:** `{compound_data.get('smiles', 'N/A')}`")
 
 def is_ionic_compound(smiles):
     """Check if compound is ionic (contains salts)"""
@@ -130,7 +130,7 @@ if option == "Generate 3D Structure":
     
     if generate_btn:
         if not compound_name:
-            st.warning("⚠️ Please enter a compound name")
+            st.warning(" Please enter a compound name")
         else:
             try:
                 conn = get_db_connection()
@@ -143,17 +143,17 @@ if option == "Generate 3D Structure":
                 
                 if result:
                     # Found in database
-                    st.success("✅ Data retrieved from local database")
+                    st.success(" Data retrieved from local database")
                     
-                    st.markdown("### 📊 Compound Information")
+                    st.markdown("###  Compound Information")
                     display_compound_info(result)
                     
                     smiles = result['smiles']
                     
                     if is_ionic_compound(smiles):
-                        st.warning("⚠️ 3D structure not available for ionic compounds like salts.")
+                        st.warning(" 3D structure not available for ionic compounds like salts.")
                     else:
-                        st.markdown("### 🔬 3D Molecular Structure")
+                        st.markdown("###  3D Molecular Structure")
                         with st.spinner('🧬 Generating 3D structure...'):
                             viewer_html = generate_3d_structure(smiles)
                             if viewer_html:
@@ -182,7 +182,7 @@ if option == "Generate 3D Structure":
                             display_compound_info(compound_data)
                             
                             # Save to database
-                            with st.spinner('💾 Adding to database...'):
+                            with st.spinner(' Adding to database...'):
                                 success = insert_compound(
                                     name=compound_name,
                                     formula=compound.molecular_formula,
@@ -192,10 +192,10 @@ if option == "Generate 3D Structure":
                                 )
                                 
                                 if success:
-                                    st.success("✅ Compound added to database!")
+                                    st.success(" Compound added to database!")
                             
                             if is_ionic_compound(smiles):
-                                st.warning("⚠️ 3D structure not available for ionic compounds like salts.")
+                                st.warning(" 3D structure not available for ionic compounds like salts.")
                             else:
                                 st.markdown("### 🔬 3D Molecular Structure")
                                 with st.spinner('🧬 Generating 3D structure...'):
@@ -204,28 +204,28 @@ if option == "Generate 3D Structure":
                                         st.components.v1.html(viewer_html, height=550)
                         
                         else:
-                            st.error("❌ Compound not found in the database or PubChem.")
+                            st.error(" Compound not found in the database or PubChem.")
                 
                 cursor.close()
                 conn.close()
                     
             except Exception as e:
-                st.error(f"⚠️ Error: {e}")
+                st.error(f" Error: {e}")
 
 # ==================== MODE 2: DRAW MOLECULE ====================
 elif option == "Draw Molecule":
-    st.subheader("✏️ Draw Your Molecule")
-    st.info("💡 Use the Ketcher editor below to draw your molecule structure")
+    st.subheader(" Draw Your Molecule")
+    st.info(" Use the Ketcher editor below to draw your molecule structure")
     
     smiles_drawn = st_ketcher(key="ketcher_draw")
     
     if smiles_drawn:
-        st.success(f"✅ Generated SMILES: `{smiles_drawn}`")
+        st.success(f" Generated SMILES: `{smiles_drawn}`")
         
         col1, col2 = st.columns(2)
         
         with col1:
-            st.markdown("### 📊 Compound Information")
+            st.markdown("###  Compound Information")
             try:
                 with st.spinner('🔍 Identifying compound...'):
                     compounds = pcp.get_compounds(smiles_drawn, 'smiles')
@@ -242,11 +242,11 @@ elif option == "Draw Molecule":
                         }
                         display_compound_info(compound_data)
                     else:
-                        st.warning("⚠️ No compound found for this SMILES in PubChem database.")
+                        st.warning(" No compound found for this SMILES in PubChem database.")
                         st.markdown(f"**🔗 SMILES:** `{smiles_drawn}`")
                         
             except Exception as e:
-                st.error(f"⚠️ Error fetching compound information: {e}")
+                st.error(f" Error fetching compound information: {e}")
         
         with col2:
             st.markdown("### 🔬 3D Structure")
@@ -256,7 +256,7 @@ elif option == "Draw Molecule":
                     if viewer_html:
                         st.components.v1.html(viewer_html, height=400)
             else:
-                st.warning("⚠️ 3D structure not available for ionic compounds.")
+                st.warning(" 3D structure not available for ionic compounds.")
 
 # Footer
 st.markdown("<br><br>", unsafe_allow_html=True)
